@@ -14,6 +14,7 @@ public class DtoComposition implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	private String IdComposition;
 	private String operator;
 	private String totalCoins;
 	private String totalNotes;
@@ -21,6 +22,7 @@ public class DtoComposition implements Serializable{
 	private String initialValue;
 	
 	public DtoComposition(Composition composition) {
+		IdComposition = Long.toString(composition.getCompositionId());
 		operator = composition.getOperator();
 		totalCoins = Double.toString(composition.getTotalCoins()) ;
 		totalNotes = Double.toString(composition.getTotalNotes());

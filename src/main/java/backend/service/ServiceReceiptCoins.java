@@ -4,12 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import backend.dto.DtoReceiptCoins;
 import backend.entity.ReceiptCoins;
 import backend.repository.ReceiptCoinsRepository;
 
@@ -19,9 +22,20 @@ public class ServiceReceiptCoins {
 	@Autowired
 	private ReceiptCoinsRepository repository;
 	
-	public ReceiptCoins Save(ReceiptCoins coins) {
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	public ReceiptCoins DtoToEntity (DtoReceiptCoins dto) { 
+		return modelMapper.map(dto, ReceiptCoins.class);
+	}
+	
+	public DtoReceiptCoins EntityToDto (ReceiptCoins receiptCoins) {
+		return modelMapper.map(receiptCoins, DtoReceiptCoins.class);
+	}
+	
+	public ResponseEntity<ReceiptCoins>  Save(ReceiptCoins coins) {
 		repository.save(coins);
-		return coins;
+		return ResponseEntity.ok(coins);
 	}
 	
 	public Optional<ReceiptCoins> findById(String id) {
@@ -29,9 +43,9 @@ public class ServiceReceiptCoins {
 	}
 	
 	@GetMapping
-	public Page<ReceiptCoins> findAll(Pageable pageable){
+	public Page<DtoReceiptCoins> findAll(Pageable pageable){
 		Page<ReceiptCoins> result = repository.findAll(pageable);
-		return result.map(x -> new ReceiptCoins());		
+		return result.map(x -> new DtoReceiptCoins(x));		
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -54,17 +68,15 @@ public class ServiceReceiptCoins {
 		return total;
 	}
 		
-	private double valueOfNotes(ReceiptCoins coins) {	
-		double valueNoteTwo = coins.getNoteTwo()*2;
-		double valueNoteFive = coins.getNoteFive()*5;
-		double valueNoteTen = coins.getNoteTen()*10;
-		double valueNoteTwenty = coins.getNoteTwenty()*20;
-		double valueNoteFifity = coins.getNoteFifity()*50;
-		double valueNoteOnehundred = coins.getNoteOnehundred()*100;
-		double valueNoteTwohundred = coins.getNoteTwohundred()*200;
+	private double valueOfNotes(ReceiptCoins notes) {	
+		double valueNoteTwo = notes.getNoteTwo()*2;
+		double valueNoteFive = notes.getNoteFive()*5;
+		double valueNoteTen = notes.getNoteTen()*10;
+		double valueNoteTwenty = notes.getNoteTwenty()*20;
+		double valueNoteFifity = notes.getNoteFifity()*50;
+		double valueNoteOnehundred = notes.getNoteOnehundred()*100;
+		double valueNoteTwohundred = notes.getNoteTwohundred()*200;
 		double total = valueNoteTwohundred + valueNoteOnehundred + valueNoteFifity + valueNoteTwenty + valueNoteTen + valueNoteFive + valueNoteTwo;	
 		return total;
 	}
-	
-
 }

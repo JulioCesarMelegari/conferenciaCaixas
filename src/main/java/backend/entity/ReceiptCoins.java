@@ -33,6 +33,5 @@ public class ReceiptCoins {
 	private int noteTwenty;
 	private int noteFifity;
 	private int noteOnehundred;
-	private int noteTwohundred;
-	
+	private int noteTwohundred;	
 }
